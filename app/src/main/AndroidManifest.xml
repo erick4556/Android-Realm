@@ -19,4 +19,5 @@
         </activity>
         <activity android:name=".activities.NoteActivity"></activity>
     </application>
+    
 </manifest>
