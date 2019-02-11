@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.example.erick.proyect1_realm.models.Board;
 import com.example.erick.proyect1_realm.models.Note;
+import com.facebook.stetho.Stetho;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,6 +33,19 @@ public class MyApplication extends Application {
         BoardID = getIdByTable(realm, Board.class);
         NoteId = getIdByTable(realm, Note.class);
 
+        //Evitar la pérdida de conexión
+        RealmInspectorModulesProvider realmInspector = RealmInspectorModulesProvider.builder(this)
+                .withDeleteIfMigrationNeeded(true)
+                .build();
+
+        //Implementación de setho
+        //Se inicializa la libreria
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(realmInspector)
+                        .build());
+
         realm.close();
 
     }
@@ -38,7 +53,7 @@ public class MyApplication extends Application {
     //Configuración por defecto de la base de datos realm para el contexto de la aplicación
     private void setUpRealmConfig(){
 
-        Realm.init(getApplicationContext());
+        Realm.init(this);
 
         RealmConfiguration config = new RealmConfiguration
                 .Builder()
